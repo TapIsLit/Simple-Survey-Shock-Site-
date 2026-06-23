@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -352,6 +353,11 @@
             transform: scale(0.95);
         }
 
+        .option:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         progress {
             width: 90%;
             height: 10px;
@@ -444,6 +450,7 @@
         ];
 
         let currentQuestion = 0;
+        let isAnswering = false;
         const container = document.getElementById('container');
         const surveyWrapper = document.getElementById('surveyWrapper');
         const soundEffect = document.getElementById('soundEffect');
@@ -461,6 +468,7 @@
                 return;
             }
 
+            isAnswering = false;
             const q = questions[index];
             updateStage(q.stage);
 
@@ -473,18 +481,25 @@
                 <h1>${q.title}</h1>
                 <p>${q.question}</p>
                 <div class="options-container">
-                    ${q.options.map(() => `<button class="option stage-${q.stage}" onclick="nextQuestion()">Click</button>`).join('')}
+                    ${q.options.map(() => `<button class="option stage-${q.stage}">Click</button>`).join('')}
                 </div>
             `;
 
             surveyWrapper.querySelectorAll('.option').forEach((btn, i) => {
                 btn.textContent = q.options[i];
+                btn.onclick = nextQuestion;
             });
         }
 
         function nextQuestion() {
+            if (isAnswering) return;
+            isAnswering = true;
+
             currentQuestion++;
-            renderQuestion(currentQuestion);
+            
+            setTimeout(() => {
+                renderQuestion(currentQuestion);
+            }, 800);
         }
 
         function showEndScreen() {
